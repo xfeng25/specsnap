@@ -2,6 +2,7 @@ import { ALL_SITES, DECISIONS, getSettings, getScreens, saveScreens, esc, fmtDat
 import { scanPage, highlightField } from './lib/scanner.js';
 import { describeFields } from './lib/ai.js';
 import { exportWorkbook } from './lib/excel.js';
+import { exportWordDoc } from './lib/word.js';
 
 const app = document.getElementById('app');
 const state = { view: 'home', screens: [], screenId: null, open: new Set(), filter: '', access: false, settings: {}, busy: false };
@@ -49,7 +50,7 @@ function renderHome() {
   app.innerHTML = `
     <section class="card">
       <h2>Document a screen</h2>
-      <p>Open any screen of the system you are analysing (a form, a Salesforce page, an internal portal) and scan it. SpecSnap lists every field with its type, required rule, options and limits.</p>
+      <p>Open any screen of the system you are analysing and scan it: forms, list pages and read-only detail pages. SpecSnap lists every field with its type, required rule, options, limits and example values.</p>
       <button class="primary big" data-action="scan">⌖ Scan this page</button>
     </section>
     ${n ? `
@@ -68,13 +69,16 @@ function renderHome() {
       </ul>
       <section class="card">
         <div class="stack">
-          <button class="primary" data-action="export">⬇ Export to Excel</button>
+          <div class="row">
+            <button class="primary" data-action="export">⬇ Excel</button>
+            <button class="primary" data-action="export-word">⬇ Word spec</button>
+          </div>
           <button data-action="compare" ${n < 2 ? 'disabled title="Scan at least two screens first"' : ''}>⇄ Compare two screens (old vs new)</button>
           <button class="link" data-action="clear-all" style="align-self:flex-start">Delete all screens</button>
         </div>
       </section>`
     : `<section class="card"><h2>How it works</h2>
-        <p style="margin:0">1. Open a screen and click <b>Scan this page</b>.<br>2. Add descriptions, decisions (keep / change / remove) and mapping notes.<br>3. Scan the matching screen in the new system and <b>compare</b> them.<br>4. <b>Export to Excel</b>: field inventory, mapping with risks, screenshots.</p>
+        <p style="margin:0">1. Open a screen and click <b>Scan this page</b>.<br>2. Add descriptions, decisions (keep / change / remove) and mapping notes.<br>3. Scan the matching screen in the new system and <b>compare</b> them.<br>4. Export to <b>Excel</b> (field inventory, mapping with risks) or a <b>Word</b> field specification with screenshots.</p>
       </section>`}`;
 }
 
@@ -82,15 +86,18 @@ function fieldCard(s, f, i) {
   const open = state.open.has(f.id);
   const notes = f.notes || {};
   const chips = [
+    f.kind === 'column' ? '<span class="chip kind">Table column</span>' : f.kind === 'display' ? '<span class="chip kind">Display</span>' : '',
     `<span class="chip">${esc(f.type)}</span>`,
     f.required ? '<span class="chip req">Required</span>' : '',
-    f.readonly || f.disabled ? '<span class="chip ro">Read-only</span>' : '',
+    (f.readonly || f.disabled) && (!f.kind || f.kind === 'input') ? '<span class="chip ro">Read-only</span>' : '',
     notes.decision ? `<span class="chip dec">${esc(notes.decision)}</span>` : '',
   ].join('');
   const meta = [
     f.name || f.domId ? `name: ${f.name || f.domId}` : '',
     rulesText(f),
-    f.options && f.options.length ? `options: ${f.options.slice(0, 5).join(', ')}${f.options.length > 5 ? ` +${f.options.length - 5} more` : ''}` : '',
+    f.options && f.options.length ? `${f.kind === 'column' ? 'values' : 'options'}: ${f.options.slice(0, 5).join(', ')}${f.options.length > 5 ? ` +${f.options.length - 5} more` : ''}` : '',
+    f.kind === 'column' && !(f.options && f.options.length) && f.samples && f.samples.length ? `e.g. ${f.samples.slice(0, 3).join(', ')}` : '',
+    f.kind === 'display' && f.value ? `value: ${f.value}` : '',
   ].filter(Boolean).map(esc).join(' · ');
   return `
     <div class="f ${open ? 'open' : ''}" data-fid="${f.id}">
@@ -127,12 +134,15 @@ function renderScreen() {
   });
   const req = s.fields.filter((f) => f.required).length;
   const lists = s.fields.filter((f) => f.options && f.options.length).length;
+  const nIn = s.fields.filter((f) => !f.kind || f.kind === 'input').length;
+  const nCol = s.fields.filter((f) => f.kind === 'column').length;
+  const nDis = s.fields.filter((f) => f.kind === 'display').length;
   app.innerHTML = `
     <button class="link back" data-action="home">← All screens</button>
     <section class="card screen-head">
       <input type="text" id="screen-name" value="${esc(screenName(s))}" aria-label="Screen name">
       <div class="url">${esc(s.url)}</div>
-      <div class="stats"><span><b>${s.fields.length}</b> fields</span><span><b>${req}</b> required</span><span><b>${lists}</b> with options</span>${s.hiddenCount ? `<span>${s.hiddenCount} hidden fields skipped</span>` : ''}</div>
+      <div class="stats">${nIn ? `<span><b>${nIn}</b> input fields</span>` : ''}${nCol ? `<span><b>${nCol}</b> table columns</span>` : ''}${nDis ? `<span><b>${nDis}</b> displayed values</span>` : ''}<span><b>${req}</b> required</span><span><b>${lists}</b> with options</span>${s.hiddenCount ? `<span>${s.hiddenCount} hidden fields skipped</span>` : ''}</div>
       <div class="tools">
         <button data-action="rescan">↻ Rescan</button>
         <button data-action="ai-describe">✨ Describe with AI</button>
@@ -320,7 +330,26 @@ const actions = {
       toast('Export failed: ' + e.message, 4000);
     } finally {
       el.disabled = false;
-      el.textContent = '⬇ Export to Excel';
+      el.textContent = '⬇ Excel';
+    }
+  },
+
+  async 'export-word'(el) {
+    el.disabled = true;
+    el.innerHTML = '<span class="spinner"></span>Building…';
+    try {
+      const { mapping } = await chrome.storage.local.get('mapping');
+      const blob = await exportWordDoc({
+        screens: state.screens,
+        mapping: mapping || null,
+        loadShot: async (s) => (await chrome.storage.local.get(`shot:${s.id}`))[`shot:${s.id}`] || null,
+      });
+      download(`SpecSnap field specification ${new Date().toISOString().slice(0, 10)}.docx`, blob);
+    } catch (e) {
+      toast('Export failed: ' + e.message, 4000);
+    } finally {
+      el.disabled = false;
+      el.textContent = '⬇ Word spec';
     }
   },
 };

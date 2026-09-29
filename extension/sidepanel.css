@@ -49,3 +49,5 @@ main { padding: 14px; display: flex; flex-direction: column; gap: 14px; }
 .f .edit textarea { min-height: 44px; font-size: 13px; }
 .f .edit input, .f .edit select { font-size: 13px; padding: 6px 8px; }
 .f.open { border-color: var(--primary); }
+.chip.kind { background: #e0f2fe; color: #075985; }
+@media (prefers-color-scheme: dark) { .chip.kind { background: #0c2a3a; color: #7dd3fc; } }

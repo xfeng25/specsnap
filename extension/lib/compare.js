@@ -55,10 +55,11 @@ function jaccard(a, b) {
 
 const TYPE_FAMILY = {
   Text: 'text', 'Multi-line text': 'text', 'Rich text': 'text', 'Text with suggestions': 'text', Email: 'text', Phone: 'text', URL: 'text', Password: 'text',
-  Number: 'number', Slider: 'number',
+  Number: 'number', Slider: 'number', Amount: 'number',
   Date: 'date', 'Date & time': 'date', Time: 'date', Month: 'date', Week: 'date',
   Dropdown: 'choice', 'Radio buttons': 'choice', List: 'choice', 'Multi-select': 'multi', 'Checkbox group': 'multi',
-  Checkbox: 'bool', Toggle: 'bool',
+  Checkbox: 'bool', Toggle: 'bool', 'Yes/No': 'bool',
+  'Status / category': 'choice',
   'File upload': 'file',
 };
 export const family = (t) => TYPE_FAMILY[t] || 'text';

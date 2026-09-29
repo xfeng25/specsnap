@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Northwind Supplier Portal – Vendors</title>
+<!-- Fictional list + detail page for trying SpecSnap on non-form screens. -->
+<style>
+  body { margin: 0; font: 14px/1.5 system-ui, sans-serif; background: #f4f5f7; color: #172b4d; }
+  header { background: #0b3d5c; color: #fff; padding: 14px 24px; font-weight: 700; }
+  main { max-width: 1000px; margin: 24px auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; }
+  section { background: #fff; border-radius: 8px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
+  th { color: #5e6c84; font-weight: 600; }
+  dl { display: grid; grid-template-columns: 140px 1fr; gap: 8px 12px; margin: 0; font-size: 13px; }
+  dt { color: #5e6c84; } dd { margin: 0; font-weight: 600; }
+  .badge { padding: 1px 8px; border-radius: 999px; background: #e3fcef; color: #006644; font-size: 12px; }
+</style>
+</head>
+<body>
+  <header>Northwind Supplier Portal</header>
+  <main>
+    <section>
+      <h2>Vendors</h2>
+      <table aria-label="Vendor list">
+        <thead><tr><th>Vendor</th><th>Country</th><th>Status</th><th>Created on</th><th>Open POs</th><th>Spend YTD</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td>Harbor Freight Co.</td><td>United States</td><td>Active</td><td>2024-03-11</td><td>4</td><td>$128,400.00</td><td><a href="#">View</a></td></tr>
+          <tr><td>Kyoto Paper Works</td><td>Japan</td><td>Pending</td><td>2025-08-02</td><td>0</td><td>$0.00</td><td><a href="#">View</a></td></tr>
+          <tr><td>ACME Packaging Ltd</td><td>Canada</td><td>Active</td><td>2023-11-20</td><td>7</td><td>$56,210.50</td><td><a href="#">View</a></td></tr>
+          <tr><td>Blue River Foods</td><td>United States</td><td>Blocked</td><td>2022-06-05</td><td>1</td><td>$9,800.00</td><td><a href="#">View</a></td></tr>
+          <tr><td>Shanghai Print Co.</td><td>China</td><td>Active</td><td>2025-01-17</td><td>2</td><td>$31,050.00</td><td><a href="#">View</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section>
+      <h2>Vendor details</h2>
+      <dl>
+        <dt>Vendor name</dt><dd>Harbor Freight Co.</dd>
+        <dt>Vendor ID</dt><dd>V-100231</dd>
+        <dt>Tax ID</dt><dd>94-3321907</dd>
+        <dt>Payment terms</dt><dd>Net 30</dd>
+        <dt>Contact email</dt><dd>ap@harborfreight.example</dd>
+        <dt>Onboarded</dt><dd>2024-03-11</dd>
+        <dt>Status</dt><dd><span class="badge">Active</span></dd>
+      </dl>
+    </section>
+  </main>
+</body>
+</html>

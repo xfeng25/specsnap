@@ -5,6 +5,7 @@ import { risksFor } from './compare.js';
 const HEADER_FILL = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF134E4A' } };
 const NOTE_FILL = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F766E' } };
 const BORDER = { style: 'thin', color: { argb: 'FFD0D4DC' } };
+const KIND = { input: 'Input field', column: 'Table column', display: 'Displayed value' };
 const fill = (argb) => ({ type: 'pattern', pattern: 'solid', fgColor: { argb } });
 
 function header(ws, cols, noteCols = []) {
@@ -41,19 +42,19 @@ function imageSize(src) {
 function inventory(wb, screens) {
   const ws = wb.addWorksheet('Field Inventory');
   const cols = [
-    ['Screen', 22], ['Section', 20], ['Field', 26], ['Technical name', 18], ['Type', 14], ['Required', 9], ['Read-only', 9],
-    ['Rules (length, format)', 24], ['Options', 32], ['Current value', 18], ['Help text', 24],
+    ['Screen', 22], ['Section', 20], ['Field', 26], ['Kind', 13], ['Technical name', 18], ['Type', 14], ['Required', 9], ['Read-only', 9],
+    ['Rules (length, format)', 24], ['Options / values', 32], ['Example / current value', 22], ['Help text', 24],
     ['Business description', 40], ['Decision', 11], ['Mapping / target field', 26], ['Notes', 30],
   ];
-  header(ws, cols, [11, 12, 13, 14]);
+  header(ws, cols, [12, 13, 14, 15]);
   for (const s of screens) {
     for (const f of s.fields) {
       const row = ws.addRow([
-        screenName(s), f.section, f.label, f.name || f.domId, f.type, f.required ? 'Yes' : '', f.readonly || f.disabled ? 'Yes' : '',
-        rulesText(f), (f.options || []).join('\n'), f.value, f.help,
+        screenName(s), f.section, f.label, KIND[f.kind || 'input'], f.name || f.domId, f.type, f.required ? 'Yes' : '', f.readonly || f.disabled ? 'Yes' : '',
+        rulesText(f), (f.options || []).join('\n'), f.kind === 'column' ? (f.samples || []).join(', ') : f.value, f.help,
         (f.notes && f.notes.description) || '', (f.notes && f.notes.decision) || '', (f.notes && f.notes.mapping) || '', (f.notes && f.notes.comment) || '',
       ]);
-      if (f.required) row.getCell(6).fill = fill('FFFDE8D7');
+      if (f.required) row.getCell(7).fill = fill('FFFDE8D7');
     }
   }
   body(ws, 2);

@@ -2,6 +2,7 @@ import { getSettings, getScreens, esc, download, toast, rulesText, screenName } 
 import { matchFields, confidenceLabel, risksFor } from './lib/compare.js';
 import { matchWithAI } from './lib/ai.js';
 import { exportWorkbook } from './lib/excel.js';
+import { exportWordDoc } from './lib/word.js';
 
 const $ = (id) => document.getElementById(id);
 const settings = await getSettings();
@@ -153,6 +154,16 @@ $('export').addEventListener('click', async () => {
     loadShot: async (s) => (await chrome.storage.local.get(`shot:${s.id}`))[`shot:${s.id}`] || null,
   });
   download(`SpecSnap mapping ${new Date().toISOString().slice(0, 10)}.xlsx`, blob);
+});
+
+$('export-word').addEventListener('click', async () => {
+  screens = await getScreens();
+  const blob = await exportWordDoc({
+    screens: [A(), B()],
+    mapping,
+    loadShot: async (s) => (await chrome.storage.local.get(`shot:${s.id}`))[`shot:${s.id}`] || null,
+  });
+  download(`SpecSnap mapping ${new Date().toISOString().slice(0, 10)}.docx`, blob);
 });
 
 if (!mapping) autoMatch(); else render();

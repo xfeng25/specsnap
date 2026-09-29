@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "SpecSnap – Screen to Field Spec",
   "short_name": "SpecSnap",
-  "version": "0.1.0",
-  "description": "Turn any system screen into a field inventory: labels, types, required rules, dropdown options. Compare old vs new screens and export to Excel.",
+  "version": "0.2.0",
+  "description": "Turn any system screen into a field spec: forms, lists and detail pages. Compare old vs new screens for migration gaps. Export to Excel or Word.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
