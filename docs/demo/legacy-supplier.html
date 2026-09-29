@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SUPPLIER MASTER MAINTENANCE - Legacy ERP</title>
+<!-- A fictional legacy system screen for trying SpecSnap. -->
+<style>
+  body { font: 13px Tahoma, Verdana, sans-serif; background: #d4d0c8; margin: 0; }
+  .bar { background: linear-gradient(#0a246a, #3a6ea5); color: #fff; padding: 6px 10px; font-weight: bold; }
+  .menu { background: #ece9d8; border-bottom: 1px solid #999; padding: 4px 10px; font-size: 12px; }
+  .panel { margin: 16px; background: #ece9d8; border: 2px outset #fff; padding: 12px 16px; max-width: 760px; }
+  h3 { margin: 0 0 8px; font-size: 13px; color: #0a246a; }
+  fieldset { border: 1px solid #999; margin: 0 0 12px; padding: 8px 10px; }
+  legend { font-weight: bold; color: #0a246a; }
+  td { padding: 3px 6px; }
+  td.l { text-align: right; white-space: nowrap; }
+  input, select, textarea { font: 12px Tahoma, sans-serif; border: 2px inset #fff; }
+  .btns { margin-top: 8px; }
+  .btns button { font: 12px Tahoma; min-width: 80px; }
+</style>
+</head>
+<body>
+  <div class="bar">NW-ERP 4.2 &nbsp;|&nbsp; Supplier Master Maintenance (SM01)</div>
+  <div class="menu">File &nbsp; Edit &nbsp; Supplier &nbsp; Reports &nbsp; Help</div>
+  <div class="panel">
+    <h3>SM01 - Create / Change Supplier</h3>
+    <form>
+      <fieldset>
+        <legend>General Data</legend>
+        <table>
+          <tr><td class="l">Supplier No.:</td><td><input name="SUPP_NO" size="10" value="100482" readonly></td></tr>
+          <tr><td class="l">Supplier Name*:</td><td><input name="SUPP_NAME1" size="45" maxlength="60" required></td></tr>
+          <tr><td class="l">Tax No.:</td><td><input name="TAX_NO" size="20" maxlength="20"></td></tr>
+          <tr><td class="l">Country Code*:</td><td><input name="LAND1" size="3" maxlength="2"> <small>(ISO 2-letter)</small></td></tr>
+          <tr><td class="l">Supplier Group:</td><td><select name="KTOKK"><option value="">--</option><option>DOM - Domestic</option><option>FOR - Foreign</option><option>ONE - One-time</option></select></td></tr>
+        </table>
+      </fieldset>
+      <fieldset>
+        <legend>Payment</legend>
+        <table>
+          <tr><td class="l">Payment Term:</td><td><select name="ZTERM"><option>N30</option><option>N45</option><option>N60</option><option>N90</option></select></td></tr>
+          <tr><td class="l">Bank Acct No.:</td><td><input name="BANKN" size="30" maxlength="34"></td></tr>
+        </table>
+      </fieldset>
+      <fieldset>
+        <legend>Communication</legend>
+        <table>
+          <tr><td class="l">Contact Phone:</td><td><input name="TELF1" type="tel" size="20"></td></tr>
+          <tr><td class="l">Fax:</td><td><input name="TELFX" size="20"></td></tr>
+          <tr><td class="l">Remarks:</td><td><textarea name="REMARK" rows="3" cols="45"></textarea></td></tr>
+        </table>
+      </fieldset>
+      <table><tr><td class="l">Active:</td><td><input type="checkbox" name="ACTIVE" checked></td></tr></table>
+      <div class="btns"><button type="button">Save</button> <button type="button">Check</button> <button type="button">Cancel</button></div>
+    </form>
+  </div>
+</body>
+</html>

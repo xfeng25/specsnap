@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings · SpecSnap</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { max-width: 640px; margin: 0 auto; padding: 28px 20px 60px; display: flex; flex-direction: column; gap: 16px; }
+    .card h2 { margin-bottom: 12px; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    #test-result { font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="brand"><img src="icons/icon32.png" alt=""><h1>SpecSnap settings</h1></div>
+    <section class="card">
+      <h2>AI (optional)</h2>
+      <label class="field"><span>Claude API key</span><input type="password" id="apiKey" placeholder="sk-ant-..." autocomplete="off">
+        <small>Used for "Describe with AI" and "Improve matches with AI". Everything else works without a key. Get one at console.anthropic.com.</small></label>
+      <label class="field"><span>Model</span><input type="text" id="model"></label>
+      <label class="field"><span>Language for AI text</span><select id="language"></select></label>
+      <div class="row"><button class="primary" id="save">Save</button><button id="test">Test connection</button><span id="test-result"></span></div>
+    </section>
+    <section class="card">
+      <h2>Website access</h2>
+      <p class="muted small" style="margin:0 0 10px">SpecSnap needs access to the websites you document to read fields and take screenshots. It only reads a page when you click Scan.</p>
+      <div class="row"><span id="access-state"></span><button id="access-btn"></button></div>
+    </section>
+    <section class="card">
+      <h2>Privacy</h2>
+      <p class="small" style="margin:0">Scanned screens, notes and screenshots stay in your browser. Values in password and other sensitive-looking fields are never stored. Data is only sent to Anthropic's API when you use an AI button with your own key.</p>
+    </section>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>

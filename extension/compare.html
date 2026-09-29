@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compare screens · SpecSnap</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    header.top .left { display: flex; align-items: center; gap: 14px; }
+    header.top h1 { font-size: 17px; }
+    main { max-width: 1300px; margin: 0 auto; padding: 20px 24px 60px; display: flex; flex-direction: column; gap: 16px; }
+    .pick { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: end; }
+    .pick .arrow { font-size: 22px; color: var(--muted); padding-bottom: 8px; }
+    .pick label.field { margin: 0; }
+    .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+    .bar .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stats { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 5px 12px; font-size: 13px; }
+    .stat b { font-size: 16px; margin-right: 4px; }
+    .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 980px; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { font-size: 12px; color: var(--muted); background: var(--surface-2); font-weight: 600; }
+    tr:last-child td { border-bottom: 0; }
+    td.src { width: 24%; } td.tgt { width: 24%; } td.conf { width: 90px; } td.risk { width: 32%; }
+    .fl { font-weight: 600; } .fm { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    td select { font-size: 13px; padding: 5px 8px; }
+    td input { font-size: 12px; padding: 5px 8px; margin-top: 6px; }
+    .status { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; }
+    .ok { background: #d9f2e0; color: #146c2e; } .check { background: #ffefc7; color: #7a5a00; } .gap { background: #fbd9d7; color: #a1261b; } .new { background: #e3e8ff; color: #3730a3; }
+    .conf-High { color: #146c2e; font-weight: 700; } .conf-Medium { color: #7a5a00; font-weight: 700; } .conf-Low { color: #a1261b; font-weight: 700; }
+    ul.risks { margin: 0; padding-left: 16px; font-size: 12px; }
+    .src-ai { font-size: 11px; color: var(--primary); }
+    .empty { padding: 40px; text-align: center; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="left"><div class="brand"><img src="icons/icon32.png" alt="">SpecSnap</div><h1>Compare screens</h1></div>
+    <a href="options.html" target="_blank">Settings</a>
+  </header>
+  <main>
+    <section class="card">
+      <div class="pick">
+        <label class="field"><span>Source screen (usually the old system)</span><select id="src"></select></label>
+        <div class="arrow">→</div>
+        <label class="field"><span>Target screen (usually the new system)</span><select id="tgt"></select></label>
+      </div>
+      <p class="muted small" style="margin:10px 0 0">SpecSnap matches fields by meaning of the label (e.g. “Supplier” = “Vendor”, “Tax No.” = “Tax ID”) and type, then flags data migration risks. Change any match with the dropdown.</p>
+    </section>
+    <div class="bar">
+      <div class="stats" id="stats"></div>
+      <div class="btns">
+        <button id="rematch">↻ Match again</button>
+        <button id="ai">✨ Improve matches with AI</button>
+        <button class="primary" id="export">⬇ Export to Excel</button>
+      </div>
+    </div>
+    <div id="ai-error" class="callout error hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Source field</th><th>Target field</th><th>Confidence</th><th>Status &amp; risks</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <section class="card" id="new-card">
+      <h2 style="margin-bottom:8px">New in target <span class="muted small">(no source field maps to these)</span></h2>
+      <div id="new-list" class="small"></div>
+    </section>
+  </main>
+  <script src="lib/exceljs.min.js"></script>
+  <script type="module" src="compare.js"></script>
+</body>
+</html>
